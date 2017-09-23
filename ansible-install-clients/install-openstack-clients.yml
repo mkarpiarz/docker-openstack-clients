@@ -1,0 +1,51 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: localhost
+  #remote_user: root
+  become: yes
+  become_method: sudo
+
+  vars:
+    system_packages_to_install:
+      - wget
+      - unzip
+      - supervisor
+      - python-pip
+    python_packages_to_install:
+      - virtualenv
+      - python-openstackclient
+      - python-neutronclient
+      - python-heatclient
+      - python-ceilometerclient
+      - aodhclient
+    terraform_version: "0.10.6"
+
+  tasks:
+  - name: "Install system packages: {{ system_packages_to_install }}"
+    package:
+      name: "{{ system_packages_to_install | join(',') }}"
+      state: latest
+
+  - name: "Install Python packages: {{ python_packages_to_install }}"
+    pip:
+      name: "{{ python_packages_to_install | join(' ') }}"
+      state: present
+
+  - name: Download Terraform
+    get_url:
+      url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+      dest: /tmp/terraform_{{ terraform_version }}_linux_amd64.zip
+
+  - name: Install Terraform
+    unarchive:
+      src: /tmp/terraform_{{ terraform_version }}_linux_amd64.zip
+      dest: /usr/local/bin
+      copy: no
+
+  - name: Add .stackrc
+    template:
+      src: templates/stackrc
+      dest: /root/.stackrc
+      owner: root
+      group: root
+      mode: '0600'
