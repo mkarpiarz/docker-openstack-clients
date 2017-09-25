@@ -1,0 +1,47 @@
+heat_template_version: 2015-04-30
+
+description: Create a private network and route it to the external net.
+
+parameters:
+  public_net:
+    type: string
+    label: Public network name or ID
+    description: Public network to attach our router to.
+    default: extnet
+  cidr:
+    type: string
+    label: Network CIDR
+    description: The CIDR of the private network.
+    default: '10.10.10.0/24'
+  dns:
+    type: comma_delimited_list
+    label: DNS nameservers
+    description: Comma separated list of DNS nameservers for the private network.
+    default: '8.8.8.8'
+
+resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: private
+
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: private
+      network_id: { get_resource: private_net }
+      cidr: { get_param: cidr }
+      dns_nameservers: { get_param: dns }
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      name: private
+      external_gateway_info:
+        network: { get_param: public_net }
+
+  router-interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet: { get_resource: private_subnet }
