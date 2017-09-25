@@ -8,6 +8,4 @@ RUN /bin/sh /tmp/install.sh
 VOLUME ["/root"]
 WORKDIR /root
 
-#CMD ["/usr/bin/supervisord -n"]
-#CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-CMD while true; do echo hello world; sleep 1; done
+CMD ["/usr/bin/supervisord", "-n"]
