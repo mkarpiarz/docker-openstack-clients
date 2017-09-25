@@ -1,14 +1,15 @@
 #!/bin/bash
 export OS_AUTH_URL=https://compute.datacentred.io:5000/v3
 export OS_USER_DOMAIN_NAME="Default"
+export OS_PROJECT_DOMAIN_NAME="Default"
 if [ -z "$OS_USER_DOMAIN_NAME" ]; then unset OS_USER_DOMAIN_NAME; fi
 unset OS_TENANT_ID
 unset OS_TENANT_NAME
-export OS_REGION_NAME="sal01"
+export OS_REGION_NAME="vagrant"
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
 export OS_INTERFACE=public
 export OS_IDENTITY_API_VERSION=3
 
-export OS_PROJECT_NAME="changeme"
 export OS_USERNAME="changeme"
 export OS_PASSWORD="changeme"
+export OS_PROJECT_NAME="changeme"
